@@ -187,7 +187,7 @@ public class DBConnector {
         ResultSet resultSet = null;
 
         try {
-            PreparedStatement getCurriculums = conn.prepareStatement("SELECT * FROM Curriculum ");
+            PreparedStatement getCurriculums = conn.prepareStatement("SELECT * FROM Curriculum");
             resultSet = getCurriculums.executeQuery();
 
             while (resultSet.next()) {
@@ -301,7 +301,7 @@ public class DBConnector {
 
 
         try {
-            PreparedStatement getCurriculumBooks = conn.prepareStatement("SELECT * FROM Books INNER JOIN BooksCurriculum ON Books.BookID=BooksCurriculum.BookID WHERE CurriculumID = ? ");
+            PreparedStatement getCurriculumBooks = conn.prepareStatement("SELECT * FROM Books INNER JOIN BooksCurriculum ON Books.BookID=BooksCurriculum.BookID WHERE CurriculumID = ? AND Books.Deleted = 0 ");
             getCurriculumBooks.setInt(1, curriculumID);
             resultSet = getCurriculumBooks.executeQuery();
 
@@ -508,6 +508,8 @@ public class DBConnector {
     public User getUserFromToken(String token) throws SQLException {
         ResultSet resultSet = null;
         User userFromToken = null;
+
+
 
 
 
