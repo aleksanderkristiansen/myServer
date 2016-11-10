@@ -146,11 +146,11 @@ public class UsersEndpoint  {
     @Produces("application/json")
     public Response login(String data) throws SQLException {
         String decrypt = Crypter.encryptDecryptXOR(data); //Fjernes når din klient krypterer.
-        //decrypt = Crypter.encryptDecryptXOR(decrypt);
+        decrypt = Crypter.encryptDecryptXOR(decrypt);
 
-        User userLogin = new Gson().fromJson(decrypt, User.class);
+        User user = new Gson().fromJson(decrypt, User.class);
 
-        String token = tokenController.authenticate(userLogin.getUsername(), userLogin.getPassword());
+        String token = tokenController.authenticate(user.getUsername(), user.getPassword());
 
         if (token != null) {
             //demo to check if it returns this on post.

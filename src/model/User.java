@@ -13,10 +13,11 @@ public class User {
 
     }
 
-   /* public User(int userID){
-        this.userID = userID;
 
-    }*/
+   public User(String userName, String password){
+       this.userName = userName;
+       this.password = password;
+   }
 
 
 
@@ -93,17 +94,6 @@ public class User {
     public void setUserType(Boolean admin) {
         userType = admin;
     }
-
-    /*
-    @Override
-    public String toString() {
-        return "User{" +
-                "userID=" + userID +
-                ", name='" + firstName + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }*/
 }
 
 
