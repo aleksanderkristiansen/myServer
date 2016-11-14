@@ -11,32 +11,29 @@ public class Book {
     private String publisher;
     private String title;
     private String author;
-    private double priceAB;
-    private double priceSAXO;
-    private double priceCDON;
+    private String bookstoreName;
+    private double price;
     private int version;
 
-    public Book(int bookID, String publisher, String title, String author, int version, double ISBN, double priceAB, double priceSAXO, double priceCDON) {
+    public Book(int bookID, String publisher, String title, String author, int version, double ISBN, String bookstoreName, double price) {
         this.bookID = bookID;
         this.publisher = publisher;
         this.title = title;
         this.author = author;
         this.version = version;
         this.ISBN = ISBN;
-        this.priceAB = priceAB;
-        this.priceSAXO = priceSAXO;
-        this.priceCDON = priceCDON;
+        this.bookstoreName = bookstoreName;
+        this.price = price;
     }
 
-    public Book(String publisher, String title, String author, int version, double ISBN, double priceAB, double priceSAXO, double priceCDON) {
+    public Book(String publisher, String title, String author, int version, double ISBN, String bookstoreName, double price) {
         this.publisher = publisher;
         this.title = title;
         this.author = author;
         this.version = version;
         this.ISBN = ISBN;
-        this.priceAB = priceAB;
-        this.priceSAXO = priceSAXO;
-        this.priceCDON = priceCDON;
+        this.bookstoreName = bookstoreName;
+        this.price = price;
     }
 
     public int getBookID() {
@@ -87,28 +84,18 @@ public class Book {
         this.ISBN = ISBN;
     }
 
-    public double getPriceAB() {
-        return priceAB;
+    public double getPrice() {
+        return price;
     }
 
-    public void setPriceAB(double priceAB) {
-        this.priceAB = priceAB;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public double getPriceSAXO() {
-        return priceSAXO;
-    }
+    public String getBookstoreName() { return bookstoreName; }
 
-    public void setPriceSAXO(double priceSAXO) {
-        this.priceSAXO = priceSAXO;
-    }
-
-    public double getPriceCDON() {
-        return priceCDON;
-    }
-
-    public void setPriceCDON(double priceCDON) {
-        this.priceCDON = priceCDON;
+    public void setBookstoreName(String bookstoreName) {
+        this.bookstoreName = bookstoreName;
     }
 
     //    @Override

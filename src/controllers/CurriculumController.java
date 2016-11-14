@@ -53,7 +53,7 @@ public class CurriculumController {
     // Stavefejl - Rettet fra curricilum til curriculum
     public ArrayList<Book> getCurriculumBooks(int curriculumID) {
         DBConnector db = new DBConnector();
-        ArrayList<Book> curriculumBooks = db.getCurriculumBooks(curriculumID);
+        ArrayList<Book> curriculumBooks = db.Books(curriculumID);
         db.close();
         return curriculumBooks;
 

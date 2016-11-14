@@ -6,7 +6,7 @@ package model;
 
 public class User {
     int userID;
-    String firstName, lastName, userName, email, password;
+    String firstName, lastName, email, password;
     Boolean userType;
 
     public User(){
@@ -14,26 +14,24 @@ public class User {
     }
 
 
-   public User(String userName, String password){
-       this.userName = userName;
+   public User(String email, String password){
+       this.email = email;
        this.password = password;
    }
 
 
 
-    public User(String firstName, String lastName, String userName, String email, String password, Boolean userType) {
+    public User(String firstName, String lastName, String email, String password, Boolean userType) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userName = userName;
         this.email = email;
         this.password = password;
         this.userType = userType;
     }
-    public User(int userID, String firstName, String lastName, String userName, String email, String password, Boolean userType) {
+    public User(int userID, String firstName, String lastName, String email, String password, Boolean userType) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userName = userName;
         this.email = email;
         this.password = password;
         this.userType = userType;
@@ -61,14 +59,6 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getUsername() {
-        return userName;
-    }
-
-    public void setUsername(String userName) {
-        this.userName = userName;
     }
 
     public String getEmail() {

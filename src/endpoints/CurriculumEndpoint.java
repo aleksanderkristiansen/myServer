@@ -41,6 +41,8 @@ public class CurriculumEndpoint {
 
         if (curriculumController.getCurriculum(curriculumID) != null) {
 
+            int textint = curriculumController.getCurriculumBooks(1).size();
+
             String allCurriculumBooks = new Gson().toJson(curriculumController.getCurriculumBooks(curriculumID));
 
             String allCurriculumBooksC = Crypter.encryptDecryptXOR(allCurriculumBooks);

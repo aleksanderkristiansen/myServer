@@ -15,12 +15,12 @@ public class TokenController {
 
     DBConnector db = new DBConnector();
 
-    public String authenticate(String username, String password) throws SQLException {
+    public String authenticate(String email, String password) throws SQLException {
         // Authenticate the user using the credentials provided
 
         String token;
 
-        User foundUser = db.authenticate(username, password);
+        User foundUser = db.authenticate(email, password);
         if (foundUser != null) {
 
             token = Crypter.buildToken("abcdefghijklmnopqrstuvxyz1234567890@&%!?", 25);

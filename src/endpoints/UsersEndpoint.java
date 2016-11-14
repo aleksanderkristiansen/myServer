@@ -150,10 +150,10 @@ public class UsersEndpoint  {
 
         User user = new Gson().fromJson(decrypt, User.class);
 
-        System.out.print(user.getUsername() + user.getPassword());
+        System.out.print(user.getEmail()+ user.getPassword());
 
 
-        String token = tokenController.authenticate(user.getUsername(), user.getPassword());
+        String token = tokenController.authenticate(user.getEmail(), user.getPassword());
 
         if (token != null) {
             //demo to check if it returns this on post.
