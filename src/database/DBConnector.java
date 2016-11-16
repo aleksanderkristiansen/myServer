@@ -478,6 +478,10 @@ public class DBConnector {
                 try {
                     userFound = new User();
                     userFound.setUserID(resultSet.getInt("id"));
+                    userFound.setFirstName(resultSet.getString("first_name"));
+                    userFound.setLastName(resultSet.getString("last_name"));
+                    userFound.setEmail(resultSet.getString("email"));
+                    userFound.setUserType(resultSet.getBoolean("user_type"));
 
                 } catch (SQLException e) {
 
@@ -496,15 +500,10 @@ public class DBConnector {
     public User getUserFromToken(String token) throws SQLException {
         ResultSet resultSet = null;
         User userFromToken = null;
-
-
-
-
-
         try {
 
             PreparedStatement getUserFromToken = conn
-                    .prepareStatement("select token.user_id, user.user_type from token inner join user on token.user_id = user.id where token.token = ?");
+                    .prepareStatement("select token.user_id, user.user_type from token inner join user on token.user_id = user.id where token.token = ? and token.deleted = 0 and ");
             getUserFromToken.setString(1, token);
             resultSet = getUserFromToken.executeQuery();
 
@@ -538,7 +537,7 @@ public class DBConnector {
 
     public boolean deleteToken(String token) throws SQLException {
 
-        PreparedStatement deleteTokenStatement = conn.prepareStatement("DELETE FROM token WHERE token=?");
+        PreparedStatement deleteTokenStatement = conn.prepareStatement("UPDATE token SET deleted = 1 WHERE token = ?");
 
         try {
             deleteTokenStatement.setString(1, token);

@@ -15,7 +15,7 @@ public class TokenController {
 
     DBConnector db = new DBConnector();
 
-    public String authenticate(String email, String password) throws SQLException {
+    public User authenticate(String email, String password) throws SQLException {
         // Authenticate the user using the credentials provided
 
         String token;
@@ -23,15 +23,20 @@ public class TokenController {
         User foundUser = db.authenticate(email, password);
         if (foundUser != null) {
 
-            token = Crypter.buildToken("abcdefghijklmnopqrstuvxyz1234567890@&%!?", 25);
+            token = Crypter.buildToken("abcdefghijklmnopqrstuvxyz1234567890", 25);
 
             db.addToken(token, foundUser.getUserID());
 
+            foundUser.setToken(token);
+
         } else {
-            token = null;
+            foundUser = null;
         }
+
+
         //Retunerer en access token til klienten.
-        return token;
+
+        return foundUser;
 
 
     }

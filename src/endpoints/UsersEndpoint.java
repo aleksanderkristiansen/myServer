@@ -153,13 +153,25 @@ public class UsersEndpoint  {
         System.out.print(user.getEmail()+ user.getPassword());
 
 
-        String token = tokenController.authenticate(user.getEmail(), user.getPassword());
+        //String token = tokenController.authenticate(user.getEmail(), user.getPassword());
 
-        if (token != null) {
+        //User userLoged = new User(tokenController.getUserFromTokens(token).getUserID(), token);
+
+        User userLogedin = tokenController.authenticate(user.getEmail(), user.getPassword());
+
+        String userUsed = new Gson().toJson(userLogedin);
+
+
+
+        String userUsedC = Crypter.encryptDecryptXOR(userUsed);
+
+        //String allBooksD = Crypter.encryptDecryptXOR(userUsedC);
+
+        if (userLogedin != null) {
             //demo to check if it returns this on post.
             return Response
                 .status(200)
-                .entity(token)
+                .entity(userUsedC)
                 .build();
         } else return Response
             .status(401)
