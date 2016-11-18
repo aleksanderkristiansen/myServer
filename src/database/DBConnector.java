@@ -503,7 +503,7 @@ public class DBConnector {
         try {
 
             PreparedStatement getUserFromToken = conn
-                    .prepareStatement("select token.user_id, user.user_type from token inner join user on token.user_id = user.id where token.token = ? and token.deleted = 0 and ");
+                    .prepareStatement("select token.user_id, user.user_type from token inner join user on token.user_id = user.id where token.token = ? and token.deleted = 0 ");
             getUserFromToken.setString(1, token);
             resultSet = getUserFromToken.executeQuery();
 
@@ -537,13 +537,16 @@ public class DBConnector {
 
     public boolean deleteToken(String token) throws SQLException {
 
+        String test = token;
+
         PreparedStatement deleteTokenStatement = conn.prepareStatement("UPDATE token SET deleted = 1 WHERE token = ?");
 
         try {
-            deleteTokenStatement.setString(1, token);
+            deleteTokenStatement.setString(1, "cb3osh7byp2urckzfys8osgj8");
             deleteTokenStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
         return true;
     }

@@ -95,7 +95,7 @@ public class User {
         return token;
     }
 
-    public void setToken(String password) {
+    public void setToken(String token) {
         this.token = token;
     }
 

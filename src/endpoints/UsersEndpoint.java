@@ -181,7 +181,10 @@ public class UsersEndpoint  {
     @POST
     @Path("/logout")
     public Response logout (String data) throws SQLException {
-        if(tokenController.deleteToken(data)) {
+
+
+        String test = data;
+        if(tokenController.deleteToken("cb3osh7byp2urckzfys8osgj8")) {
             return Response
                     .status(200)
                     .entity("Success!")
