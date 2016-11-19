@@ -536,13 +536,11 @@ public class DBConnector {
     }
 
     public boolean deleteToken(String token) throws SQLException {
-
         String test = token;
-
         PreparedStatement deleteTokenStatement = conn.prepareStatement("UPDATE token SET deleted = 1 WHERE token = ?");
 
         try {
-            deleteTokenStatement.setString(1, "cb3osh7byp2urckzfys8osgj8");
+            deleteTokenStatement.setString(1, token);
             deleteTokenStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

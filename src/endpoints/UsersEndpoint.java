@@ -150,8 +150,6 @@ public class UsersEndpoint  {
 
         User user = new Gson().fromJson(decrypt, User.class);
 
-        System.out.print(user.getEmail()+ user.getPassword());
-
 
         //String token = tokenController.authenticate(user.getEmail(), user.getPassword());
 
@@ -182,9 +180,9 @@ public class UsersEndpoint  {
     @Path("/logout")
     public Response logout (String data) throws SQLException {
 
-
         String test = data;
-        if(tokenController.deleteToken("cb3osh7byp2urckzfys8osgj8")) {
+        if(tokenController.deleteToken(data)) {
+
             return Response
                     .status(200)
                     .entity("Success!")
