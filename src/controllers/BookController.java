@@ -1,7 +1,12 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import database.DBConnector;
+import model.Author;
 import model.Book;
+import model.BookStore;
+import model.Publisher;
 
 import java.util.ArrayList;
 
@@ -41,10 +46,33 @@ public class BookController {
         return deleteBook;
     }
 
-   /* public boolean addBook(String data) throws Exception {
+
+    public boolean addBook(String authors, String bookStores, String data) throws Exception {
         DBConnector db = new DBConnector();
-        Book b = new Gson().fromJson(data,Book.class);
-        return db.addCurriculumBook(b);
+
+        ArrayList<Author> listOfAuthors = new Gson().fromJson(authors, new TypeToken<ArrayList<Author>>() {
+        }.getType());
+
+        ArrayList<BookStore> listOfBookstores = new Gson().fromJson(bookStores, new TypeToken<ArrayList<BookStore>>() {
+        }.getType());
+
+        Book book = new Gson().fromJson(data,Book.class);
+
+        return db.addBook(listOfAuthors, listOfBookstores, book);
     }
-*/
+
+    public ArrayList<Author> getAuthors() throws Exception {
+        DBConnector db = new DBConnector();
+        ArrayList<Author> authors = db.getAuthors();
+        db.close();
+        return authors;
+    }
+
+    public ArrayList<Publisher> getPublishers() throws Exception {
+        DBConnector db = new DBConnector();
+        ArrayList<Publisher> publishers = db.getPublishers();
+        db.close();
+        return publishers;
+    }
+
 }

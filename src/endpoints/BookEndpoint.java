@@ -4,12 +4,16 @@ package endpoints; /**
 
 import Encrypters.Crypter;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import controllers.BookController;
 import controllers.TokenController;
+import model.Author;
+import model.BookStore;
 import model.User;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 
 // The Java class will be hosted at the URI path "/Book"
 
@@ -161,6 +165,33 @@ public class BookEndpoint {
     }
 */
 
+    @POST
+    @Produces("application/json")
+    public Response create(String authors, String bookStores, String book) throws Exception {
+
+
+        String authorsD = Crypter.encryptDecryptXOR(authors);
+        String bookStoresD = Crypter.encryptDecryptXOR(bookStores);
+
+        String bookD = Crypter.encryptDecryptXOR(book);
+
+
+
+        if (controller.addBook(authorsD, bookStoresD, bookD)) {
+            return Response
+                    .status(200)
+                    .entity("{\"message\":\"Success! Book created\"}")
+                    .build();
+        }
+        else {
+            return Response
+                    .status(400)
+                    .entity("{\"message\":\"failed\"}")
+                    .build();
+        }
+    }
+
+
     /**
      * Gør det muligt for klienten at slette eksisterende bøger
      * @param authToken Tjekker om klienten sender en access-token med request.
@@ -184,5 +215,68 @@ public class BookEndpoint {
 
 
     }
+
+    /**
+     * Denne metode gør det muligt for klienten at hente en liste over forfatter.
+     * Dataen, der bliver vist for klienten er krypteret jf. encryptDecryptXOR-metoden i Crypter-klassen
+     * @return Metoden returner enten en status 200 eller 400, alt afhængig af om forespørgslen bliver godkendt
+     * af serveren. Hertil følger også en fejlmeddelelse, hvis metoden returner en status 400.
+     * @throws Exception
+     */
+    @Path("/authors")
+    @Produces("application/json")
+    @GET
+    public Response getAuthors() throws Exception {
+        if (controller.getAuthors()!=null) {
+
+
+            String getAuthors = new Gson().toJson(controller.getAuthors());
+
+            String getAuthorsC = Crypter.encryptDecryptXOR(getAuthors);
+
+            String getAuthorsD = Crypter.encryptDecryptXOR(getAuthorsC);
+
+
+            return Response
+                    .status(200)
+                    .entity(getAuthorsC)
+                    .build();
+        }
+        else {
+            return Response
+                    .status(400)
+                    .entity("{\"message\":\"failed\"}")
+                    .build();
+        }
+    }
+
+    @Path("/publishers")
+    @Produces("application/json")
+    @GET
+    public Response getPublishers() throws Exception {
+        if (controller.getPublishers()!=null) {
+
+
+            String getPublishers = new Gson().toJson(controller.getPublishers());
+
+            String getPublishersC = Crypter.encryptDecryptXOR(getPublishers);
+
+            String getPublishersD = Crypter.encryptDecryptXOR(getPublishersC);
+
+
+            return Response
+                    .status(200)
+                    .entity(getPublishersD)
+                    .build();
+        }
+        else {
+            return Response
+                    .status(400)
+                    .entity("{\"message\":\"failed\"}")
+                    .build();
+        }
+    }
+
+
 }
 

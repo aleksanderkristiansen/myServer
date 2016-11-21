@@ -2,9 +2,7 @@ package database;
 
 import com.google.gson.Gson;
 import config.Config;
-import model.Book;
-import model.Curriculum;
-import model.User;
+import model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -148,7 +146,7 @@ public class DBConnector {
     public boolean addUser(User u) throws Exception {
 
         PreparedStatement addUserStatement =
-                conn.prepareStatement("INSERT INTO users (first_name, last_name, email, password, user_type) VALUES (?, ?, ?, ?, ?, ?)");
+                conn.prepareStatement("INSERT INTO user (first_name, last_name, email, password, user_type) VALUES (?, ?, ?, ?, ?)");
 
         try {
             addUserStatement.setString(1, u.getFirstName());
@@ -166,8 +164,7 @@ public class DBConnector {
 
     public boolean deleteUser(int id) throws SQLException {
 
-        PreparedStatement deleteUserStatement = conn.prepareStatement("UPDATE users SET deleted = 1 WHERE id=?");
-
+        PreparedStatement deleteUserStatement = conn.prepareStatement("UPDATE user SET deleted = 1 WHERE id=?");
         try {
             deleteUserStatement.setInt(1, id);
             deleteUserStatement.executeUpdate();
@@ -360,6 +357,64 @@ public class DBConnector {
 
     }
 
+    public ArrayList getAuthors() throws IllegalArgumentException {
+        ArrayList results = new ArrayList();
+        ResultSet resultSet = null;
+
+        try {
+            PreparedStatement getAuthors = conn.prepareStatement("select * from author");
+            resultSet = getAuthors.executeQuery();
+
+            while (resultSet.next()) {
+                try {
+
+                    Author author = new Author(
+                            resultSet.getInt("id"),
+                            resultSet.getString("author_name")
+                    );
+
+                    results.add(author);
+
+                } catch (Exception e) {
+
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+        return results;
+
+    }
+
+    public ArrayList getPublishers() throws IllegalArgumentException {
+        ArrayList results = new ArrayList();
+        ResultSet resultSet = null;
+
+        try {
+            PreparedStatement getPublishers = conn.prepareStatement("select * from publisher");
+            resultSet = getPublishers.executeQuery();
+
+            while (resultSet.next()) {
+                try {
+
+                    Publisher publisher = new Publisher(
+                            resultSet.getInt("id"),
+                            resultSet.getString("publisher_name")
+                    );
+
+                    results.add(publisher);
+
+                } catch (Exception e) {
+
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+        return results;
+
+    }
+
     public Book getBook(int id) throws IllegalArgumentException {
         Book book = null;
         ResultSet resultSet = null;
@@ -407,20 +462,75 @@ public class DBConnector {
         return true;
     }
 
-    public boolean addCurriculumBook(int curriculumID, String data) throws SQLException {
+    public  boolean addBook(ArrayList<Author> listOfAuthorIDs, ArrayList<BookStore> listOfBookStores, Book book) throws SQLException{
+
+
+
+        PreparedStatement addBookStatement = conn.prepareStatement("INSERT INTO book (title, version, isbn, publisher_id) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+
+        ResultSet rs = null;
+
+        try{
+            addBookStatement.setString(1, book.getTitle());
+            addBookStatement.setInt(2, book.getVersion());
+            addBookStatement.setDouble(3, book.getISBN());
+            addBookStatement.setInt(4, book.getPublisherID());
+
+            addBookStatement.executeUpdate();
+
+            rs = addBookStatement.getGeneratedKeys();
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < listOfAuthorIDs.size(); i++){
+
+            PreparedStatement addAuthorToBook = conn.prepareStatement("INTO INTO author_book (book_id, author_id) VALUES (?, ?)");
+
+            try{
+                addAuthorToBook.setInt(1, rs.getInt(1));
+                addAuthorToBook.setInt(2, listOfAuthorIDs.get(i).getId());
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+
+        }
+
+        for (int i = 0; i < listOfBookStores.size(); i++){
+
+            PreparedStatement addBookStoreToBook = conn.prepareStatement("INTO INTO book_price (book_id, bookstore_id) VALUES (?, ?)");
+
+            try{
+                addBookStoreToBook.setInt(1, rs.getInt(1));
+                addBookStoreToBook.setInt(2, listOfBookStores.get(i).getId());
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+
+        }
+
+
+
+        return true;
+    }
+
+    public boolean addCurriculumBook(int numberofAuthors, int curriculumID, String data) throws SQLException {
+
+        /*
         int id;
         PreparedStatement addBookStatement = conn.prepareStatement("INSERT INTO Books (Title, Version, ISBN, PriceAB, PriceSAXO, PriceCDON, Publisher, Author) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
         Book b = new Gson().fromJson(data, Book.class);
         try {
-/*            addBookStatement.setString(1, b.getTitle());
+            addBookStatement.setString(1, b.getTitle());
             addBookStatement.setInt(2, b.getVersion());
             addBookStatement.setDouble(3, b.getISBN());
             addBookStatement.setDouble(4, b.getPriceAB());
             addBookStatement.setDouble(5, b.getPriceSAXO());
             addBookStatement.setDouble(6, b.getPriceCDON());
             addBookStatement.setString(7, b.getPublisher());
-            addBookStatement.setString(8, b.getAuthor());*/
+            addBookStatement.setString(8, b.getAuthor());
 
             addBookStatement.executeUpdate();
             ResultSet rs = addBookStatement.getGeneratedKeys();
@@ -436,7 +546,8 @@ public class DBConnector {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        }
+*/
         return true;
 
     }

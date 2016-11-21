@@ -9,6 +9,7 @@ public class Book {
     private int bookID;
     private double ISBN;
     private String publisher;
+    private int publisherID;
     private String title;
     private String author;
     private String bookstoreName;
@@ -26,7 +27,7 @@ public class Book {
         this.price = price;
     }
 
-    public Book(String publisher, String title, String author, int version, double ISBN, String bookstoreName, double price) {
+    public Book(String publisher, String title, String author, int version, double ISBN, String bookstoreName, double price, int publisherID) {
         this.publisher = publisher;
         this.title = title;
         this.author = author;
@@ -34,6 +35,7 @@ public class Book {
         this.ISBN = ISBN;
         this.bookstoreName = bookstoreName;
         this.price = price;
+        this.publisherID = publisherID;
     }
 
     public int getBookID() {
@@ -96,6 +98,14 @@ public class Book {
 
     public void setBookstoreName(String bookstoreName) {
         this.bookstoreName = bookstoreName;
+    }
+
+    public int getPublisherID() {
+        return publisherID;
+    }
+
+    public void setPublisherID(int publisherID) {
+        this.publisherID = publisherID;
     }
 
     //    @Override

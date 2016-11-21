@@ -61,8 +61,9 @@ public class CurriculumController {
 
     public boolean addCurriculumBook(int curriculumID, String data) throws SQLException {
         DBConnector db = new DBConnector();
-        boolean addCurriculumBook = db.addCurriculumBook(curriculumID, data);
+        //boolean addCurriculumBook = db.addCurriculumBook(curriculumID, data);
         db.close();
-        return addCurriculumBook;
+        //return addCurriculumBook;
+        return true;
     }
 }

@@ -113,8 +113,8 @@ public class UsersEndpoint  {
     @POST
     @Produces("application/json")
     public Response create(String data) throws Exception {
-        String s = new Gson().fromJson(data,String.class);
-        String decrypt = Crypter.encryptDecryptXOR(s);
+        String decrypt = Crypter.encryptDecryptXOR(data);
+
         if (controller.addUser(decrypt)) {
             //demo to check if it returns this on post.
             return Response
@@ -131,7 +131,7 @@ public class UsersEndpoint  {
 
         User user = tokenController.getUserFromTokens(authToken);
 
-        if (user != null){
+        if (user.getUserID() == userId || user.getUserType()){
             if(controller.deleteUser(userId)) {
                 return Response.status(200).entity("{\"message\":\"Success! User deleted\"}").build();
             }
