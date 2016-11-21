@@ -165,19 +165,15 @@ public class BookEndpoint {
     }
 */
 
+
     @POST
     @Produces("application/json")
-    public Response create(String authors, String bookStores, String book) throws Exception {
+    public Response create(String bookData) throws Exception {
 
 
-        String authorsD = Crypter.encryptDecryptXOR(authors);
-        String bookStoresD = Crypter.encryptDecryptXOR(bookStores);
+        String bookDataD = Crypter.encryptDecryptXOR(bookData);
 
-        String bookD = Crypter.encryptDecryptXOR(book);
-
-
-
-        if (controller.addBook(authorsD, bookStoresD, bookD)) {
+        if (controller.addBook(bookDataD)) {
             return Response
                     .status(200)
                     .entity("{\"message\":\"Success! Book created\"}")
@@ -266,7 +262,31 @@ public class BookEndpoint {
 
             return Response
                     .status(200)
-                    .entity(getPublishersD)
+                    .entity(getPublishersC)
+                    .build();
+        }
+        else {
+            return Response
+                    .status(400)
+                    .entity("{\"message\":\"failed\"}")
+                    .build();
+        }
+    }
+
+    @Path("/bookstores")
+    @Produces("application/json")
+    @GET
+    public Response getBookStores() throws Exception {
+        if (controller.getBookStores()!=null) {
+
+
+            String getBookstores = new Gson().toJson(controller.getBookStores());
+
+            String getBookstoresC = Crypter.encryptDecryptXOR(getBookstores);
+
+            return Response
+                    .status(200)
+                    .entity(getBookstoresC)
                     .build();
         }
         else {

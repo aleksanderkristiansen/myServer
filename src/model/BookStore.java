@@ -15,6 +15,11 @@ public class BookStore {
         this.priceOfBook = priceOfBook;
     }
 
+    public BookStore(int id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }

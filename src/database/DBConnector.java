@@ -415,6 +415,35 @@ public class DBConnector {
 
     }
 
+    public ArrayList getBookStores() throws IllegalArgumentException {
+        ArrayList results = new ArrayList();
+        ResultSet resultSet = null;
+
+        try {
+            PreparedStatement getPublishers = conn.prepareStatement("select * from bookstore");
+            resultSet = getPublishers.executeQuery();
+
+            while (resultSet.next()) {
+                try {
+
+                    BookStore bookStore = new BookStore(
+                            resultSet.getInt("id"),
+                            resultSet.getString("bookstore_name")
+                    );
+
+                    results.add(bookStore);
+
+                } catch (Exception e) {
+
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+        return results;
+
+    }
+
     public Book getBook(int id) throws IllegalArgumentException {
         Book book = null;
         ResultSet resultSet = null;
@@ -463,8 +492,6 @@ public class DBConnector {
     }
 
     public  boolean addBook(ArrayList<Author> listOfAuthorIDs, ArrayList<BookStore> listOfBookStores, Book book) throws SQLException{
-
-
 
         PreparedStatement addBookStatement = conn.prepareStatement("INSERT INTO book (title, version, isbn, publisher_id) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 

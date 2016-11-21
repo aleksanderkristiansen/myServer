@@ -47,18 +47,31 @@ public class BookController {
     }
 
 
-    public boolean addBook(String authors, String bookStores, String data) throws Exception {
+    public boolean addBook(String bookData) throws Exception {
         DBConnector db = new DBConnector();
 
-        ArrayList<Author> listOfAuthors = new Gson().fromJson(authors, new TypeToken<ArrayList<Author>>() {
+        ArrayList<Object> bookDataList = new Gson().fromJson(bookData, new TypeToken<ArrayList<Object>>() {
         }.getType());
 
-        ArrayList<BookStore> listOfBookstores = new Gson().fromJson(bookStores, new TypeToken<ArrayList<BookStore>>() {
-        }.getType());
+        ArrayList<Author> lstAuthors = new ArrayList<>();
+        ArrayList<BookStore> lstBookStores = new ArrayList<>();
+        Book book = null;
 
-        Book book = new Gson().fromJson(data,Book.class);
+        for (Object obj : bookDataList){
+            if(obj instanceof Author){
+                Author author = (Author) obj;
+                lstAuthors.add(author);
+            }
+            if(obj.getClass() == BookStore.class){
+                BookStore bookStore = (BookStore) obj;
+                lstBookStores.add(bookStore);
+            }
+            if(obj.getClass() == Book.class){
+                book = (Book) obj;
+            }
+        }
 
-        return db.addBook(listOfAuthors, listOfBookstores, book);
+        return db.addBook(lstAuthors, lstBookStores, book);
     }
 
     public ArrayList<Author> getAuthors() throws Exception {
@@ -73,6 +86,13 @@ public class BookController {
         ArrayList<Publisher> publishers = db.getPublishers();
         db.close();
         return publishers;
+    }
+
+    public ArrayList<BookStore> getBookStores() throws Exception {
+        DBConnector db = new DBConnector();
+        ArrayList<BookStore> bookStores = db.getBookStores();
+        db.close();
+        return bookStores;
     }
 
 }
