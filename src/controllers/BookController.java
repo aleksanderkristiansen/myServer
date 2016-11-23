@@ -1,15 +1,9 @@
 package controllers;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import database.DBConnector;
 import model.*;
-import org.codehaus.jackson.map.ObjectMapper;
-
-
 import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * Opretter en instans af DBConnector og kalder alle metoder til Book.
  * Klassen modtager datasættet fra DBConnector som videresendes til BookEndpoint.
@@ -28,6 +22,8 @@ public class BookController {
     public Book getBook(int id) throws Exception {
         DBConnector db = new DBConnector();
         Book book = db.getBook(id);
+        book.setLstAuthors(db.getAuthorsOfBook(id));
+        book.setLstBookStore(db.getBookStoresOfBook(id));
         db.close();
         return book;
     }

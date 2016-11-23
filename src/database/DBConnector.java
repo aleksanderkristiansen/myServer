@@ -385,6 +385,36 @@ public class DBConnector {
 
     }
 
+    public ArrayList getAuthorsOfBook(int id) throws IllegalArgumentException {
+        ArrayList results = new ArrayList();
+        ResultSet resultSet = null;
+
+        try {
+            PreparedStatement getAuthorsOfBook = conn.prepareStatement("select author.id, author.author_name from author inner join author_book on author_book.author_id = author.id where author_book.book_id = ?");
+            getAuthorsOfBook.setInt(1, id);
+            resultSet = getAuthorsOfBook.executeQuery();
+
+            while (resultSet.next()) {
+                try {
+
+                    Author author = new Author(
+                            resultSet.getInt("id"),
+                            resultSet.getString("author_name")
+                    );
+
+                    results.add(author);
+
+                } catch (Exception e) {
+
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+        return results;
+
+    }
+
     public ArrayList getPublishers() throws IllegalArgumentException {
         ArrayList results = new ArrayList();
         ResultSet resultSet = null;
@@ -411,7 +441,6 @@ public class DBConnector {
             System.out.println(sqlException.getMessage());
         }
         return results;
-
     }
 
     public ArrayList getBookStores() throws IllegalArgumentException {
@@ -443,24 +472,52 @@ public class DBConnector {
 
     }
 
+    public ArrayList getBookStoresOfBook(int id) throws IllegalArgumentException {
+        ArrayList results = new ArrayList();
+        ResultSet resultSet = null;
+
+        try {
+            PreparedStatement getBookStoresOfBook = conn.prepareStatement("select bookstore.id, bookstore.bookstore_name, book_price.price from bookstore inner join book_price on book_price.bookstore_id = bookstore.id where book_price.book_id = ?");
+            getBookStoresOfBook.setInt(1, id);
+            resultSet = getBookStoresOfBook.executeQuery();
+
+            while (resultSet.next()) {
+                try {
+
+                    BookStore bookStore = new BookStore(
+                            resultSet.getInt("id"),
+                            resultSet.getString("bookstore_name"),
+                            resultSet.getDouble("price")
+                    );
+
+                    results.add(bookStore);
+
+                } catch (Exception e) {
+
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+        return results;
+
+    }
+
     public Book getBook(int id) throws IllegalArgumentException {
         Book book = null;
         ResultSet resultSet = null;
 
         try {
-            PreparedStatement getBook = conn.prepareStatement("select book.id, publisher.publisher_name, book.title, author.author_name, book.version, book.isbn, bookstore.bookstore_name, book_price.price from book inner join book_curriculum on book.id = book_curriculum.book_id inner join publisher on book.publisher_id = publisher.id inner join author_book on book.id = author_book.book_id inner join author on author_book.author_id = author.id inner join book_price on book.id = book_price.book_id inner join bookstore on book_price.bookstore_id = bookstore.id where book.deleted = 0 and book.id=? ");
+            PreparedStatement getBook = conn.prepareStatement("select book.id, book.title, book.version, book.isbn, publisher.publisher_name from book inner join publisher on book.publisher_id = publisher.id where book.id = ?");
             getBook.setInt(1, id);
             resultSet = getBook.executeQuery();
             resultSet.next();
             book = new Book(
                     resultSet.getInt("id"),
-                    resultSet.getString("publisher_name"),
                     resultSet.getString("title"),
-                    resultSet.getString("author_name"),
                     resultSet.getInt("version"),
                     resultSet.getDouble("isbn"),
-                    resultSet.getString("bookstore_name"),
-                    resultSet.getDouble("price")
+                    resultSet.getString("publisher_name")
             );
         } catch (SQLException sqlException) {
             System.out.println(sqlException.getMessage());
@@ -468,6 +525,8 @@ public class DBConnector {
         return book;
 
     }
+
+
 
     public boolean editBook(int id, String data) throws SQLException {
         PreparedStatement editBookStatement = conn.prepareStatement("UPDATE Books SET Title = ?, Version = ?, ISBN = ?, PriceAB = ?, PriceSAXO = ?, PriceCDON = ?, Publisher = ?, Author = ? WHERE bookID =?");
@@ -682,7 +741,6 @@ public class DBConnector {
     }
 
     public boolean deleteToken(String token) throws SQLException {
-        String test = token;
         PreparedStatement deleteTokenStatement = conn.prepareStatement("UPDATE token SET deleted = 1 WHERE token = ?");
 
         try {

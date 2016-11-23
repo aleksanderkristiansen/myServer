@@ -32,6 +32,15 @@ public class Book {
 
     }
 
+    public Book(int bookID, String title, int version,double ISBN, String publisher) {
+        this.bookID = bookID;
+        this.publisher = publisher;
+        this.title = title;
+        this.version = version;
+        this.ISBN = ISBN;
+
+    }
+
     public Book(String publisher, String title, String author, int version, double ISBN, String bookstoreName, double price, int publisherID, ArrayList<Author> lstAuthors, ArrayList<BookStore> lstBookStores) {
         this.publisher = publisher;
         this.title = title;
@@ -127,7 +136,7 @@ public class Book {
         return lstBookStores;
     }
 
-    public void setLstBookStore(ArrayList<BookStore> lstBookStore) {
+    public void setLstBookStore(ArrayList<BookStore> lstBookStores) {
         this.lstBookStores = lstBookStores;
     }
 
