@@ -95,7 +95,7 @@ public class DBConnector {
         ResultSet resultSet = null;
 
         try {
-            PreparedStatement getUser = conn.prepareStatement("SELECT * FROM Users WHERE UserID=?");
+            PreparedStatement getUser = conn.prepareStatement("SELECT * FROM user WHERE id=?");
             getUser.setInt(1, id);
             resultSet = getUser.executeQuery();
 
@@ -124,16 +124,15 @@ public class DBConnector {
         return user;
     }
 
-    public boolean editUser(int id, String data) throws SQLException {
-        User u = new Gson().fromJson(data, User.class);
+    public boolean editUser(int id, User u) throws SQLException {
         PreparedStatement editUserStatement = conn
-                .prepareStatement("UPDATE users SET first_name = ?, last_name = ?, email = ?, user_type = ? WHERE id = ?");
+                .prepareStatement("Update user set first_name = COALESCE(NULLIF( ?,NULL),first_name), last_name = COALESCE(NULLIF( ?,NULL),last_name), email = COALESCE(NULLIF( ?,NULL), email), password = COALESCE(NULLIF( ?,NULL),password) where id = ?");
 
         try {
             editUserStatement.setString(1, u.getFirstName());
             editUserStatement.setString(2, u.getLastName());
             editUserStatement.setString(3, u.getEmail());
-            editUserStatement.setBoolean(4, u.getUserType());
+            editUserStatement.setString(4, u.getPassword());
             editUserStatement.setInt(5, id);
 
             editUserStatement.executeUpdate();
@@ -491,11 +490,12 @@ public class DBConnector {
         return true;
     }
 
-    public  boolean addBook(ArrayList<Author> listOfAuthorIDs, ArrayList<BookStore> listOfBookStores, Book book) throws SQLException{
+    public  boolean addBook(Book book) throws SQLException{
 
         PreparedStatement addBookStatement = conn.prepareStatement("INSERT INTO book (title, version, isbn, publisher_id) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
-        ResultSet rs = null;
+
+        int risultato = 0;
 
         try{
             addBookStatement.setString(1, book.getTitle());
@@ -505,32 +505,40 @@ public class DBConnector {
 
             addBookStatement.executeUpdate();
 
-            rs = addBookStatement.getGeneratedKeys();
+            ResultSet rs = addBookStatement.getGeneratedKeys();
+            if (rs.next()){
+                risultato=rs.getInt(1);
+            }
 
         }catch (SQLException e) {
             e.printStackTrace();
         }
 
-        for (int i = 0; i < listOfAuthorIDs.size(); i++){
+        for (int i = 0; i < book.getLstAuthors().size(); i++){
 
-            PreparedStatement addAuthorToBook = conn.prepareStatement("INTO INTO author_book (book_id, author_id) VALUES (?, ?)");
+            PreparedStatement addAuthorToBook = conn.prepareStatement("INSERT INTO author_book (book_id, author_id) VALUES (?, ?)");
 
             try{
-                addAuthorToBook.setInt(1, rs.getInt(1));
-                addAuthorToBook.setInt(2, listOfAuthorIDs.get(i).getId());
+                addAuthorToBook.setInt(1, risultato);
+                addAuthorToBook.setInt(2, book.getLstAuthors().get(i).getId());
+
+                addAuthorToBook.executeUpdate();
             }catch (SQLException e){
                 e.printStackTrace();
             }
 
         }
 
-        for (int i = 0; i < listOfBookStores.size(); i++){
+        for (int i = 0; i < book.getLstBookStores().size(); i++){
 
-            PreparedStatement addBookStoreToBook = conn.prepareStatement("INTO INTO book_price (book_id, bookstore_id) VALUES (?, ?)");
+            PreparedStatement addBookStoreToBook = conn.prepareStatement("INSERT INTO book_price (book_id, bookstore_id, price) VALUES (?, ?, ?)");
 
             try{
-                addBookStoreToBook.setInt(1, rs.getInt(1));
-                addBookStoreToBook.setInt(2, listOfBookStores.get(i).getId());
+                addBookStoreToBook.setInt(1, risultato);
+                addBookStoreToBook.setInt(2, book.getLstBookStores().get(i).getId());
+                addBookStoreToBook.setDouble(3, book.getLstBookStores().get(i).getPriceOfBook());
+
+                addBookStoreToBook.executeUpdate();
             }catch (SQLException e){
                 e.printStackTrace();
             }

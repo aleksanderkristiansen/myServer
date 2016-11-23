@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 /**
  * Variabler til Book oprettes samt deres getters/setters.
  */
@@ -15,6 +17,8 @@ public class Book {
     private String bookstoreName;
     private double price;
     private int version;
+    private ArrayList<Author> lstAuthors;
+    private ArrayList<BookStore> lstBookStores;
 
     public Book(int bookID, String publisher, String title, String author, int version, double ISBN, String bookstoreName, double price) {
         this.bookID = bookID;
@@ -25,9 +29,10 @@ public class Book {
         this.ISBN = ISBN;
         this.bookstoreName = bookstoreName;
         this.price = price;
+
     }
 
-    public Book(String publisher, String title, String author, int version, double ISBN, String bookstoreName, double price, int publisherID) {
+    public Book(String publisher, String title, String author, int version, double ISBN, String bookstoreName, double price, int publisherID, ArrayList<Author> lstAuthors, ArrayList<BookStore> lstBookStores) {
         this.publisher = publisher;
         this.title = title;
         this.author = author;
@@ -36,6 +41,8 @@ public class Book {
         this.bookstoreName = bookstoreName;
         this.price = price;
         this.publisherID = publisherID;
+        this.lstAuthors = lstAuthors;
+        this.lstBookStores = lstBookStores;
     }
 
     public int getBookID() {
@@ -106,6 +113,22 @@ public class Book {
 
     public void setPublisherID(int publisherID) {
         this.publisherID = publisherID;
+    }
+
+    public ArrayList<Author> getLstAuthors() {
+        return lstAuthors;
+    }
+
+    public void setLstAuthors(ArrayList<Author> lstAuthors) {
+        this.lstAuthors = lstAuthors;
+    }
+
+    public ArrayList<BookStore> getLstBookStores() {
+        return lstBookStores;
+    }
+
+    public void setLstBookStore(ArrayList<BookStore> lstBookStore) {
+        this.lstBookStores = lstBookStores;
     }
 
     //    @Override

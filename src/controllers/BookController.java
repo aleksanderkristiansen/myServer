@@ -3,12 +3,12 @@ package controllers;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import database.DBConnector;
-import model.Author;
-import model.Book;
-import model.BookStore;
-import model.Publisher;
+import model.*;
+import org.codehaus.jackson.map.ObjectMapper;
+
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Opretter en instans af DBConnector og kalder alle metoder til Book.
@@ -50,28 +50,9 @@ public class BookController {
     public boolean addBook(String bookData) throws Exception {
         DBConnector db = new DBConnector();
 
-        ArrayList<Object> bookDataList = new Gson().fromJson(bookData, new TypeToken<ArrayList<Object>>() {
-        }.getType());
+        Book book = new Gson().fromJson(bookData, Book.class);
 
-        ArrayList<Author> lstAuthors = new ArrayList<>();
-        ArrayList<BookStore> lstBookStores = new ArrayList<>();
-        Book book = null;
-
-        for (Object obj : bookDataList){
-            if(obj instanceof Author){
-                Author author = (Author) obj;
-                lstAuthors.add(author);
-            }
-            if(obj.getClass() == BookStore.class){
-                BookStore bookStore = (BookStore) obj;
-                lstBookStores.add(bookStore);
-            }
-            if(obj.getClass() == Book.class){
-                book = (Book) obj;
-            }
-        }
-
-        return db.addBook(lstAuthors, lstBookStores, book);
+        return db.addBook(book);
     }
 
     public ArrayList<Author> getAuthors() throws Exception {

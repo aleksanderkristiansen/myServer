@@ -41,7 +41,13 @@ public class UserController {
 
   public boolean editUser(int id, String data) throws SQLException {
     DBConnector db = new DBConnector();
-    boolean editUser = db.editUser(id, data);
+    User u = gson.fromJson(data, User.class);
+    if (u.getPassword() !=null){
+      String hashedPassword = Digester.hashWithSalt(u.getPassword());
+      u.setPassword(hashedPassword);
+    }
+
+    boolean editUser = db.editUser(id, u);
     db.close();
     return editUser;
   }

@@ -13,6 +13,10 @@ public class Author {
         this.name = name;
     }
 
+    public Author(int id){
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
