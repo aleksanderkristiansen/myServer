@@ -529,7 +529,7 @@ public class DBConnector {
 
 
     public boolean editBook(int id, String data) throws SQLException {
-        PreparedStatement editBookStatement = conn.prepareStatement("UPDATE Books SET Title = ?, Version = ?, ISBN = ?, PriceAB = ?, PriceSAXO = ?, PriceCDON = ?, Publisher = ?, Author = ? WHERE bookID =?");
+        PreparedStatement editBookStatement = conn.prepareStatement("UPDATE Books SET Title = ?, Version = ?, ISBN = ?, PriceAB = ?, PriceSAXO = ?, PriceCDON = ?, Publisher = ?, Author = ? WHERE bookID =? AND deleted = 0");
         Book b = new Gson().fromJson(data, Book.class);
         try {
 /*            editBookStatement.setString(1, b.getTitle());
@@ -672,7 +672,7 @@ public class DBConnector {
         User userFound = null;
 
         try {
-            PreparedStatement authenticate = conn.prepareStatement("select * from user where email = ? AND password = ?");
+            PreparedStatement authenticate = conn.prepareStatement("select * from user where email = ? AND password = ? AND deleted = 0");
             authenticate.setString(1, email);
             authenticate.setString(2, password);
 

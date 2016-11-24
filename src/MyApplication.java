@@ -49,11 +49,6 @@ public class MyApplication extends Application {
     return h;
   }
 
-  //This is unnecessary and doesn't work.
-  @GET
-  @Produces("text/plain")
-  public String demo() {
-    return "This is root!";
-  }
+
 }
 
