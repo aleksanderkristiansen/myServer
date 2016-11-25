@@ -114,8 +114,9 @@ public class UsersEndpoint  {
     @Produces("application/json")
     public Response create(String data) throws Exception {
         String decrypt = Crypter.encryptDecryptXOR(data);
+        User user = new Gson().fromJson(decrypt, User.class);
 
-        if (controller.addUser(decrypt)) {
+        if (controller.addUser(user)) {
             //demo to check if it returns this on post.
             return Response
                     .status(200)

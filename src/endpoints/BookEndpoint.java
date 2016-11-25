@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import controllers.BookController;
 import controllers.TokenController;
 import model.Author;
+import model.Book;
 import model.BookStore;
 import model.User;
 
@@ -169,11 +170,9 @@ public class BookEndpoint {
     @POST
     @Produces("application/json")
     public Response create(String bookData) throws Exception {
-
-
-        String bookDataD = Crypter.encryptDecryptXOR(bookData);
-
-        if (controller.addBook(bookDataD)) {
+        String decryptBook = Crypter.encryptDecryptXOR(bookData);
+        Book book = new Gson().fromJson(decryptBook, Book.class);
+        if (controller.addBook(book)) {
             return Response
                     .status(200)
                     .entity("{\"message\":\"Success! Book created\"}")

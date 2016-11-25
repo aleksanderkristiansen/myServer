@@ -59,11 +59,10 @@ public class UserController {
     return deleteUser;
   }
 
-  public boolean addUser(String data) throws Exception {
-    User u = gson.fromJson(data, User.class);
-    String hashedPassword = Digester.hashWithSalt(u.getPassword());
-    u.setPassword(hashedPassword);
-    return db.addUser(u);
+  public boolean addUser(User user) throws Exception {
+    String hashedPassword = Digester.hashWithSalt(user.getPassword());
+    user.setPassword(hashedPassword);
+    return db.addUser(user);
   }
 
 }

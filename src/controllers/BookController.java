@@ -43,11 +43,8 @@ public class BookController {
     }
 
 
-    public boolean addBook(String bookData) throws Exception {
+    public boolean addBook(Book book) throws Exception {
         DBConnector db = new DBConnector();
-
-        Book book = new Gson().fromJson(bookData, Book.class);
-
         return db.addBook(book);
     }
 
