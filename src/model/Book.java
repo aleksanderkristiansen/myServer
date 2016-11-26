@@ -54,6 +54,15 @@ public class Book {
         this.lstBookStores = lstBookStores;
     }
 
+    public Book(String title, int version, double ISBN, int publisherID, ArrayList<Author> lstAuthors, ArrayList<BookStore> lstBookStores) {
+        this.title = title;
+        this.version = version;
+        this.ISBN = ISBN;
+        this.publisherID = publisherID;
+        this.lstAuthors = lstAuthors;
+        this.lstBookStores = lstBookStores;
+    }
+
     public int getBookID() {
         return bookID;
     }

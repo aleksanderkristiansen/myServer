@@ -20,6 +20,12 @@ public class BookStore {
         this.name = name;
     }
 
+    public BookStore(String name, double priceOfBook){
+        this.id = id;
+        this.name = name;
+        this.priceOfBook = priceOfBook;
+    }
+
     public int getId() {
         return id;
     }

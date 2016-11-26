@@ -92,7 +92,11 @@ public class AdminView {
         getPublishers();
         System.out.println("Skriv ID på publisher");
         int publisherID = sc.nextInt();
-        getAuthors();
+
+        for (Author author : bookController.getAuthors()){
+            int index = bookController.getAuthors().indexOf(author);
+            System.out.println(bookController.getAuthors().indexOf(author) + ": " + author.getName());
+        }
         ArrayList<Author> lstAuthors = new ArrayList<>();
         System.out.println("Skriv ID på forfatter");
         int selectedAuthor = sc.nextInt();
@@ -107,15 +111,28 @@ public class AdminView {
                 lstAuthors.add(bookController.getAuthors().get(selectedAuthor));
             }
         }
-
-
-
-
-        System.out.println("Adgangskode");
-        String password = sc.next();
-        System.out.println("0 for alm. bruger eller 1 for administrator");
-
-
+        getBookstores();
+        ArrayList<BookStore> lstBookStores = new ArrayList<>();
+        System.out.println("Skriv ID på Bookstore");
+        int selectedBookstore = sc.nextInt();
+        System.out.println("Hvad skal bogen koste");
+        double price = sc.nextDouble();
+        lstBookStores.add(bookController.getBookStores().get(selectedBookstore));
+        int bookStoreSelection = 1;
+        while (bookStoreSelection == 1){
+            System.out.println("Tilføj forhandler mere? 0: Nej 1: Ja");
+            bookStoreSelection = sc.nextInt();
+            if (bookStoreSelection == 1){
+                System.out.println("Skriv ID på Bookstore");
+                selectedBookstore = sc.nextInt();
+                System.out.println("Hvad skal bogen koste");
+                price = sc.nextDouble();
+                BookStore bookStore = new BookStore(bookController.getBookStores().get(selectedBookstore).getId(), bookController.getBookStores().get(selectedBookstore).getName(), price);
+                lstBookStores.add(bookStore);
+            }
+        }
+        Book book = new Book(title, version, isbn, publisherID, lstAuthors, lstBookStores );
+        bookController.addBook(book);
     }
 
     private void createUser() throws Exception {
