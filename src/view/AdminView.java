@@ -1,9 +1,12 @@
 package view;
 
+import Encrypters.Crypter;
+import Encrypters.Digester;
 import com.google.gson.Gson;
 import config.Config;
 import config.ConfigMap;
 import controllers.BookController;
+import controllers.TokenController;
 import controllers.UserController;
 import model.*;
 
@@ -22,6 +25,7 @@ public class AdminView {
 
     UserController userController;
     BookController bookController;
+    TokenController tokenController;
 
     public AdminView(){}
 
@@ -41,19 +45,22 @@ public class AdminView {
 
         this.userController = new UserController();
         this.bookController = new BookController();
+        this.tokenController = new TokenController();
 
+        login();
+    }
 
+    private void adminMenu(User user) throws Exception{
+        boolean continueMenu = true;
 
-
-
-        boolean stop = true;
-
-        while (stop){
-            System.out.print(" 1: Vis alle brugere"
-                    +"\n 2: Opret bruger"
-                    +"\n 3: Opret Bog"
-                    +"\n 4: Slet bruger"
-                    +"\n 5: Slet bog" );
+        while (continueMenu){
+            System.out.println("\nIndtast nummeret på den funktion du gerne vil tilgå"
+                    +"\n1: Vis alle brugere"
+                    +"\n2: Opret bruger"
+                    +"\n3: Opret Bog"
+                    +"\n4: Slet bruger"
+                    +"\n5: Slet bog"
+                    +"\n6: Log ud");
             int choice = sc.nextInt();
             switch (choice){
                 case 1: showAllUsers();
@@ -66,8 +73,44 @@ public class AdminView {
                     break;
                 case 5: deleteBook();
                     break;
+                case 6: logout(user);
+                    continueMenu = false;
+                    break;
+                default: logout(user);
+                    continueMenu = false;
+                    break;
             }
         }
+
+        login();
+    }
+
+    private void logout(User user) throws Exception{
+        tokenController.deleteToken(user.getToken());
+    }
+
+    private void login() throws Exception{
+
+        boolean continueLogin = true;
+
+        while (continueLogin){
+            System.out.println("E-mail");
+            String email = sc.next();
+            System.out.println("Adgangskode");
+            String password = sc.next();
+            String hashedPassword = Digester.hashWithSalt(password);
+
+            User user = tokenController.authenticate(email, hashedPassword);
+
+            if (user.getUserType()){
+                adminMenu(user);
+                continueLogin = false;
+            }
+            else{
+                System.out.println("Kombinationen af e-mail og adgangskode passer ikke samme, prøv igen");
+            }
+        }
+
     }
 
     private void deleteUser() throws SQLException {

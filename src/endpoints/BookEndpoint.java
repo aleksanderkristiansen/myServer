@@ -4,17 +4,13 @@ package endpoints; /**
 
 import Encrypters.Crypter;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import controllers.BookController;
 import controllers.TokenController;
-import model.Author;
 import model.Book;
-import model.BookStore;
 import model.User;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 
 // The Java class will be hosted at the URI path "/Book"
 

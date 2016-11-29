@@ -40,8 +40,6 @@ public class DBConnector {
             //STEP 4: Execute a query
             this.stmt = conn.createStatement();
 
-            System.out.println("Connected");
-
             //STEP 6: Clean-up environment
         } catch (SQLException se) {
             //Handle errors for JDBC
