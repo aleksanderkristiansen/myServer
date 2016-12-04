@@ -17,14 +17,10 @@ import java.sql.SQLException;
 //implements IEndpoints HUSK AT ÆNDRE INTERFACET VED PUT
 @Path("/curriculum")
 public class CurriculumEndpoint {
-    CurriculumController curriculumController;
-
+    CurriculumController curriculumController = new CurriculumController();
     TokenController tokenController = new TokenController();
 
-
     public CurriculumEndpoint(){
-
-        curriculumController = new CurriculumController();
     }
 
 
@@ -41,25 +37,21 @@ public class CurriculumEndpoint {
 
         if (curriculumController.getCurriculum(curriculumID) != null) {
 
-            int textint = curriculumController.getCurriculumBooks(1).size();
-
-            String allCurriculumBooks = new Gson().toJson(curriculumController.getCurriculumBooks(curriculumID));
-
-            String allCurriculumBooksC = Crypter.encryptDecryptXOR(allCurriculumBooks);
-
+            String lstBooksOfCurriculum = new Gson().toJson(curriculumController.getCurriculumBooks(curriculumID));
+            String lstBooksOfCurriculumCrypted = Crypter.encryptDecryptXOR(lstBooksOfCurriculum);
 
             return Response
                     .status(200)
-                    .entity(allCurriculumBooksC)
-                    .header("Access-Control-Allow-Origin", "*") //Skal måske være der
-                    .build(); //kør
+                    .entity(lstBooksOfCurriculumCrypted)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .build();
         } else {
             return Response
                 //error response
                 .status(400)
                 .entity("{\"message\":\"failed\"}")
                 .build();
-    }
+        }
     }
 
     /**
@@ -73,13 +65,12 @@ public class CurriculumEndpoint {
 
         if (curriculumController.getCurriculums() != null) {
 
-            String allCurriculums = new Gson().toJson(curriculumController.getCurriculums());
-
-            String allCurriculumsC = Crypter.encryptDecryptXOR(allCurriculums);
+            String lstCurriculums = new Gson().toJson(curriculumController.getCurriculums());
+            String lstCurriculumsCrypted = Crypter.encryptDecryptXOR(lstCurriculums);
 
             return Response
                     .status(200)
-                    .entity(allCurriculumsC)
+                    .entity(lstCurriculumsCrypted)
                     .header("Access-Control-Allow-Origin", "*") //Skal måske være der
                     .build(); //kør
         } else {

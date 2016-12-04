@@ -41,20 +41,15 @@ public class BookEndpoint {
     @Produces("application/json")
     public Response get() throws Exception {
 
-
-
         if (controller.getBooks()!=null) {
 
-            String allBooks = new Gson().toJson(controller.getBooks());
+            String lstBooks = new Gson().toJson(controller.getBooks());
 
-            String allBooksC = Crypter.encryptDecryptXOR(allBooks);
-
-            String allBooksD = Crypter.encryptDecryptXOR(allBooksC);
-
+            String lstBookCrypted = Crypter.encryptDecryptXOR(lstBooks);
 
             return Response
                     .status(200)
-                    .entity(allBooksC)
+                    .entity(lstBookCrypted)
                     .build();
         }
         else {
@@ -77,17 +72,13 @@ public class BookEndpoint {
     public Response get(@PathParam("id") int bookId) throws Exception {
         if (controller.getBook(bookId)!=null) {
 
-
             String getBook = new Gson().toJson(controller.getBook(bookId));
 
-            String getBookC = Crypter.encryptDecryptXOR(getBook);
-
-            String getBookD = Crypter.encryptDecryptXOR(getBookC);
-
+            String getBookCrypted = Crypter.encryptDecryptXOR(getBook);
 
             return Response
                     .status(200)
-                    .entity(getBookC)
+                    .entity(getBookCrypted)
                     .build();
         }
         else {
@@ -119,9 +110,9 @@ public class BookEndpoint {
         if (user != null){
 
             if (controller.getBook(id) != null) {
-                String s = new Gson().fromJson(data,String.class);
-                String decrypt = Crypter.encryptDecryptXOR(s);
-                if (controller.editBook(id, decrypt)) {
+                String string = new Gson().fromJson(data,String.class);
+                String decrypted = Crypter.encryptDecryptXOR(string);
+                if (controller.editBook(id, decrypted)) {
                     return Response
                             .status(200)
                             .entity("{\"message\":\"Success! Book edited\"}")
@@ -140,28 +131,7 @@ public class BookEndpoint {
             }
 
         }else return Response.status(400).entity("{\"message\":\"failed\"}").build();
-
-
     }
-
- /*  @POST
-    @Produces("application/json")
-    public Response create(String data) throws Exception {
-        if (controller.addCurriculumBook(data)) {
-            return Response
-                    .status(200)
-                    .entity("{\"message\":\"Success! Book created\"}")
-                    .build();
-        }
-        else {
-            return Response
-                    .status(400)
-                    .entity("{\"message\":\"failed\"}")
-                    .build();
-        }
-    }
-*/
-
 
     @POST
     @Produces("application/json")
@@ -181,7 +151,6 @@ public class BookEndpoint {
                     .build();
         }
     }
-
 
     /**
      * Gør det muligt for klienten at slette eksisterende bøger
@@ -203,8 +172,6 @@ public class BookEndpoint {
             }
             else return Response.status(400).entity("{\"message\":\"failed\"}").build();
         }else return Response.status(400).entity("{\"message\":\"failed\"}").build();
-
-
     }
 
     /**
@@ -221,16 +188,13 @@ public class BookEndpoint {
         if (controller.getAuthors()!=null) {
 
 
-            String getAuthors = new Gson().toJson(controller.getAuthors());
+            String lstAuthors = new Gson().toJson(controller.getAuthors());
 
-            String getAuthorsC = Crypter.encryptDecryptXOR(getAuthors);
-
-            String getAuthorsD = Crypter.encryptDecryptXOR(getAuthorsC);
-
+            String lstAuthorsCrypted = Crypter.encryptDecryptXOR(lstAuthors);
 
             return Response
                     .status(200)
-                    .entity(getAuthorsC)
+                    .entity(lstAuthorsCrypted)
                     .build();
         }
         else {
@@ -248,16 +212,13 @@ public class BookEndpoint {
         if (controller.getPublishers()!=null) {
 
 
-            String getPublishers = new Gson().toJson(controller.getPublishers());
+            String lstPublishers = new Gson().toJson(controller.getPublishers());
 
-            String getPublishersC = Crypter.encryptDecryptXOR(getPublishers);
-
-            String getPublishersD = Crypter.encryptDecryptXOR(getPublishersC);
-
+            String lstPublishersCrypted = Crypter.encryptDecryptXOR(lstPublishers);
 
             return Response
                     .status(200)
-                    .entity(getPublishersC)
+                    .entity(lstPublishersCrypted)
                     .build();
         }
         else {
@@ -275,13 +236,13 @@ public class BookEndpoint {
         if (controller.getBookStores()!=null) {
 
 
-            String getBookstores = new Gson().toJson(controller.getBookStores());
+            String lstBookStores = new Gson().toJson(controller.getBookStores());
 
-            String getBookstoresC = Crypter.encryptDecryptXOR(getBookstores);
+            String lstBookStoresCrypted = Crypter.encryptDecryptXOR(lstBookStores);
 
             return Response
                     .status(200)
-                    .entity(getBookstoresC)
+                    .entity(lstBookStoresCrypted)
                     .build();
         }
         else {
@@ -291,7 +252,5 @@ public class BookEndpoint {
                     .build();
         }
     }
-
-
 }
 
