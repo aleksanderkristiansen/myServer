@@ -14,7 +14,6 @@ import java.sql.SQLException;
 /**
  * Created by magnusrasmussen on 17/10/2016.
  */
-//implements IEndpoints HUSK AT ÆNDRE INTERFACET VED PUT
 @Path("/curriculum")
 public class CurriculumEndpoint {
     CurriculumController curriculumController = new CurriculumController();
@@ -71,7 +70,7 @@ public class CurriculumEndpoint {
             return Response
                     .status(200)
                     .entity(lstCurriculumsCrypted)
-                    .header("Access-Control-Allow-Origin", "*") //Skal måske være der
+                    .header("Access-Control-Allow-Origin", "*")
                     .build(); //kør
         } else {
             return Response
@@ -125,8 +124,6 @@ public class CurriculumEndpoint {
             //demo to check if it returns this on post.
             return Response
                     .status(200)
-                    //nedenstående skal formentlig laves om. Den skal ikke returne curriculums. Lavet for at checke
-                    //at den skriver til db.
                     .entity(new Gson().toJson(Crypter.encryptDecryptXOR(new Gson().toJson(curriculumController.getCurriculums()))))
                     .build();
         }
@@ -134,34 +131,6 @@ public class CurriculumEndpoint {
                 .status(400)
                 .entity("{\"message\":\"Failed.\"}")
                 .build();
-    }
-
-    @POST
-    @Path("/{curriculumID}/book")
-    @Produces("application/json")
-
-    public Response create(@HeaderParam("authorization") String authToken, @PathParam("curriculumID")int curriculumID, String data) throws Exception {
-
-        User user = tokenController.getUserFromTokens(authToken);
-
-        if (user != null){
-            String s = new Gson().fromJson(data,String.class);
-            String decrypt = Crypter.encryptDecryptXOR(s);
-            if (curriculumController.addCurriculumBook(curriculumID, decrypt)) {
-                return Response
-                        .status(200)
-                        .entity("Success!")
-                        .build();
-            }
-            else {
-                return Response
-                        .status(400)
-                        //nedenstående skal formentlig laves om. Den skal ikke returne curriculums. Lavet for at checke
-                        //at den skriver til db.
-                        .build();
-            }
-
-        }else return Response.status(400).entity("{\"message\":\"failed\"}").build();
     }
     /**
      * Metode til at ændre et semester

@@ -55,12 +55,13 @@ public class DBConnector {
 
     /*5 user methods*/
 
+    //Henter alle aktive brugere
     public ArrayList getUsers() throws IllegalArgumentException {
         ArrayList results = new ArrayList();
         ResultSet resultSet = null;
 
         try {
-            PreparedStatement getUsers = conn.prepareStatement("SELECT * FROM user ");
+            PreparedStatement getUsers = conn.prepareStatement("SELECT * FROM user WHERE deleted = 0");
             resultSet = getUsers.executeQuery();
 
             while (resultSet.next()) {
@@ -88,12 +89,13 @@ public class DBConnector {
 
     }
 
+    //Henter specifik aktiv brugere
     public User getUser(int id) throws IllegalArgumentException {
         User user = null;
         ResultSet resultSet = null;
 
         try {
-            PreparedStatement getUser = conn.prepareStatement("SELECT * FROM user WHERE id=?");
+            PreparedStatement getUser = conn.prepareStatement("SELECT * FROM user WHERE id=? and deleted = 0");
             getUser.setInt(1, id);
             resultSet = getUser.executeQuery();
 
@@ -122,6 +124,7 @@ public class DBConnector {
         return user;
     }
 
+    //Laver ændringer i en bruger
     public boolean editUser(int id, User u) throws SQLException {
         PreparedStatement editUserStatement = conn
                 .prepareStatement("Update user set first_name = COALESCE(NULLIF( ?,NULL),first_name), last_name = COALESCE(NULLIF( ?,NULL),last_name), email = COALESCE(NULLIF( ?,NULL), email), password = COALESCE(NULLIF( ?,NULL),password) where id = ?");
@@ -140,8 +143,8 @@ public class DBConnector {
         return true;
     }
 
+    //Tilføj bruger
     public boolean addUser(User u) throws Exception {
-
         PreparedStatement addUserStatement =
                 conn.prepareStatement("INSERT INTO user (first_name, last_name, email, password, user_type) VALUES (?, ?, ?, ?, ?)");
 
@@ -159,8 +162,8 @@ public class DBConnector {
         return true;
     }
 
+    //Slet bruger
     public boolean deleteUser(int id) throws SQLException {
-
         PreparedStatement deleteUserStatement = conn.prepareStatement("UPDATE user SET deleted = 1 WHERE id=?");
         try {
             deleteUserStatement.setInt(1, id);
@@ -172,12 +175,13 @@ public class DBConnector {
     }
 
     /*Curriculum methods*/
+    //Alle pensumlister med universiteter og uddannelser
     public ArrayList getCurriculums() throws IllegalArgumentException {
         ArrayList<Curriculum> results = new ArrayList<>();
         ResultSet resultSet = null;
 
         try {
-            PreparedStatement getCurriculums = conn.prepareStatement("SELECT curriculum.id, school.school_name, education.education_name, curriculum.semester FROM education INNER JOIN curriculum on curriculum.education_id = education.id INNER JOIN school ON education.id = school.id");
+            PreparedStatement getCurriculums = conn.prepareStatement("SELECT curriculum.id, school.school_name, education.education_name, curriculum.semester FROM education INNER JOIN curriculum on curriculum.education_id = education.id INNER JOIN school ON education.school_id = school.id where curriculum.deleted = 0");
             resultSet = getCurriculums.executeQuery();
 
             while (resultSet.next()) {
@@ -201,12 +205,14 @@ public class DBConnector {
 
     }
 
+
+    //Specifik pensumliste med universiteter og uddannelser
     public Curriculum getCurriculum(int curriculumID) throws IllegalArgumentException {
         ResultSet resultSet = null;
         Curriculum curriculum = null;
 
         try {
-            PreparedStatement getCurriculum = conn.prepareStatement("SELECT curriculum.id, school.school_name, education.education_name, curriculum.semester FROM education INNER JOIN curriculum on curriculum.education_id = education.id INNER JOIN school ON education.id = school.id WHERE curriculum.id= ?");
+            PreparedStatement getCurriculum = conn.prepareStatement("SELECT curriculum.id, school.school_name, education.education_name, curriculum.semester FROM education INNER JOIN curriculum on curriculum.education_id = education.id INNER JOIN school ON education.school_id = school.id where curriculum.id = ? and curriculum.deleted = 0");
             getCurriculum.setInt(1, curriculumID);
             resultSet = getCurriculum.executeQuery();
 
@@ -232,16 +238,16 @@ public class DBConnector {
 
     }
 
+    //Ændre en pensumliste
     public boolean editCurriculum(int id, String data) throws SQLException {
-        PreparedStatement editCurriculumStatement = conn.prepareStatement("UPDATE Curriculum SET School = ?, Education = ?, Semester = ? WHERE curriculumID = ?");
+        PreparedStatement editCurriculumStatement = conn.prepareStatement("UPDATE curriculum SET education_id = ?, semester = ? WHERE id = ?");
 
         Curriculum c = new Gson().fromJson(data, Curriculum.class);
 
         try {
-            editCurriculumStatement.setString(1, c.getSchool());
-            editCurriculumStatement.setString(2, c.getEducation());
-            editCurriculumStatement.setInt(3, c.getSemester());
-            editCurriculumStatement.setInt(4, id);
+            editCurriculumStatement.setInt(1, c.getEducationID());
+            editCurriculumStatement.setInt(2, c.getSemester());
+            editCurriculumStatement.setInt(3, id);
 
             editCurriculumStatement.executeUpdate();
         } catch (SQLException e) {
@@ -250,14 +256,14 @@ public class DBConnector {
         return true;
     }
 
+    //Tilføj pensumliste
     public boolean addCurriculum(Curriculum c) throws SQLException {
-        PreparedStatement addCurriculumStatement = conn.prepareStatement("INSERT INTO Curriculum (School, Education, Semester) VALUES (?, ?, ?)");
+        PreparedStatement addCurriculumStatement = conn.prepareStatement("INSERT INTO curriculum (education_id, semester) VALUES (?, ?)");
 
         try {
 
-            addCurriculumStatement.setString(1, c.getSchool());
-            addCurriculumStatement.setString(2, c.getEducation());
-            addCurriculumStatement.setInt(3, c.getSemester());
+            addCurriculumStatement.setInt(1, c.getEducationID());
+            addCurriculumStatement.setInt(2, c.getSemester());
 
             addCurriculumStatement.executeUpdate();
 
@@ -267,6 +273,7 @@ public class DBConnector {
         return true;
     }
 
+    //Slet pensumliste
     public boolean deleteCurriculum(int id) throws SQLException {
         PreparedStatement deleteUserStatement = conn.prepareStatement("UPDATE curriculum SET deleted = 1 WHERE id= ?");
 
@@ -279,8 +286,8 @@ public class DBConnector {
         return true;
     }
 
-    //skal skiftes
-    public ArrayList<Book> Books(int curriculumID) {
+    //Alle bøger fra specifik pensumliste
+    public ArrayList<Book> getCurriculumBooks(int curriculumID) {
         ArrayList results = new ArrayList();
         ResultSet resultSet = null;
 
@@ -319,6 +326,7 @@ public class DBConnector {
 
     /*books methods*/
 
+    //Alle bøger
     public ArrayList getBooks() throws IllegalArgumentException {
         ArrayList results = new ArrayList();
         ResultSet resultSet = null;
@@ -354,6 +362,7 @@ public class DBConnector {
 
     }
 
+    //Alle forfattere
     public ArrayList getAuthors() throws IllegalArgumentException {
         ArrayList results = new ArrayList();
         ResultSet resultSet = null;
@@ -383,6 +392,7 @@ public class DBConnector {
 
     }
 
+    //Alle forfattere af specifik bog
     public ArrayList getAuthorsOfBook(int id) throws IllegalArgumentException {
         ArrayList results = new ArrayList();
         ResultSet resultSet = null;
@@ -413,6 +423,7 @@ public class DBConnector {
 
     }
 
+    //Alle forlag
     public ArrayList getPublishers() throws IllegalArgumentException {
         ArrayList results = new ArrayList();
         ResultSet resultSet = null;
@@ -441,6 +452,7 @@ public class DBConnector {
         return results;
     }
 
+    //Alle boghandlere
     public ArrayList getBookStores() throws IllegalArgumentException {
         ArrayList results = new ArrayList();
         ResultSet resultSet = null;
@@ -470,6 +482,7 @@ public class DBConnector {
 
     }
 
+    //Alle boghandlere af specifik bog
     public ArrayList getBookStoresOfBook(int id) throws IllegalArgumentException {
         ArrayList results = new ArrayList();
         ResultSet resultSet = null;
@@ -501,6 +514,7 @@ public class DBConnector {
 
     }
 
+    //Hent specifik bog
     public Book getBook(int id) throws IllegalArgumentException {
         Book book = null;
         ResultSet resultSet = null;
@@ -524,29 +538,7 @@ public class DBConnector {
 
     }
 
-
-
-    public boolean editBook(int id, String data) throws SQLException {
-        PreparedStatement editBookStatement = conn.prepareStatement("UPDATE Books SET Title = ?, Version = ?, ISBN = ?, PriceAB = ?, PriceSAXO = ?, PriceCDON = ?, Publisher = ?, Author = ? WHERE bookID =? AND deleted = 0");
-        Book b = new Gson().fromJson(data, Book.class);
-        try {
-/*            editBookStatement.setString(1, b.getTitle());
-            editBookStatement.setInt(2, b.getVersion());
-            editBookStatement.setDouble(3, b.getISBN());
-            editBookStatement.setDouble(4, b.getPriceAB());
-            editBookStatement.setDouble(5, b.getPriceSAXO());
-            editBookStatement.setDouble(6, b.getPriceCDON());
-            editBookStatement.setString(7, b.getPublisher());
-            editBookStatement.setString(8, b.getAuthor());
-            editBookStatement.setInt(9, id);*/
-
-            editBookStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
-    }
-
+    //Tilføj bog
     public  boolean addBook(Book book) throws SQLException{
 
         PreparedStatement addBookStatement = conn.prepareStatement("INSERT INTO book (title, version, isbn, publisher_id) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -601,54 +593,13 @@ public class DBConnector {
             }
 
         }
-
-
-
         return true;
     }
 
-    public boolean addCurriculumBook(int numberofAuthors, int curriculumID, String data) throws SQLException {
-
-        /*
-        int id;
-        PreparedStatement addBookStatement = conn.prepareStatement("INSERT INTO Books (Title, Version, ISBN, PriceAB, PriceSAXO, PriceCDON, Publisher, Author) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-
-        Book b = new Gson().fromJson(data, Book.class);
-        try {
-            addBookStatement.setString(1, b.getTitle());
-            addBookStatement.setInt(2, b.getVersion());
-            addBookStatement.setDouble(3, b.getISBN());
-            addBookStatement.setDouble(4, b.getPriceAB());
-            addBookStatement.setDouble(5, b.getPriceSAXO());
-            addBookStatement.setDouble(6, b.getPriceCDON());
-            addBookStatement.setString(7, b.getPublisher());
-            addBookStatement.setString(8, b.getAuthor());
-
-            addBookStatement.executeUpdate();
-            ResultSet rs = addBookStatement.getGeneratedKeys();
-
-            if(rs.next()){
-                id = rs.getInt(1);
-
-                PreparedStatement addToBooksCurriculum = conn.prepareStatement("INSERT INTO BooksCurriculum (BookID, CurriculumID) VALUES (?,?)");
-                addToBooksCurriculum.setInt(1, id);
-                addToBooksCurriculum.setInt(2, curriculumID);
-                addToBooksCurriculum.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        }
-*/
-        return true;
-
-    }
-
-
-
+    //Slet bog
     public boolean deleteBook(int id) throws SQLException {
-        PreparedStatement deleteUserStatement = conn.prepareStatement("UPDATE Books SET Deleted = 1 WHERE BookID = ?");
-        PreparedStatement deleteBooksCurriculumRows = conn.prepareStatement("DELETE FROM BooksCurriculum WHERE BookID = ?");
+        PreparedStatement deleteUserStatement = conn.prepareStatement("UPDATE book SET deleted = 1 WHERE id = ?");
+        PreparedStatement deleteBooksCurriculumRows = conn.prepareStatement("UPDATE book_curriculum SET deleted = 1 WHERE book_id = ?");
 
         try {
             deleteUserStatement.setInt(1, id);
@@ -664,6 +615,7 @@ public class DBConnector {
         return true;
     }
 
+    //Se om brugeren findes i db
     public User authenticate(String email, String password) {
 
         ResultSet resultSet = null;
@@ -700,6 +652,7 @@ public class DBConnector {
 
     }
 
+    //Find bruger udfra token
     public User getUserFromToken(String token) throws SQLException {
         ResultSet resultSet = null;
         User userFromToken = null;
@@ -725,6 +678,7 @@ public class DBConnector {
 
     }
 
+    //TIlføj token
     public void addToken(String token, int userId) {
 
         PreparedStatement addTokenStatement;
@@ -738,6 +692,7 @@ public class DBConnector {
         }
     }
 
+    //Fjern token ved logud
     public boolean deleteToken(String token) throws SQLException {
         PreparedStatement deleteTokenStatement = conn.prepareStatement("UPDATE token SET deleted = 1 WHERE token = ?");
 

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class BookController {
 
+
     public ArrayList<Book> getBooks() throws Exception {
         DBConnector db = new DBConnector();
         ArrayList<Book> books = db.getBooks();
@@ -26,13 +27,6 @@ public class BookController {
         book.setLstBookStore(db.getBookStoresOfBook(id));
         db.close();
         return book;
-    }
-
-    public boolean editBook(int id, String data) throws Exception {
-        DBConnector db = new DBConnector();
-        boolean editBook = db.editBook(id, data);
-        db.close();
-        return editBook;
     }
 
     public boolean deleteBook(int id) throws Exception {

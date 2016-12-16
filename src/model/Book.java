@@ -148,13 +148,4 @@ public class Book {
     public void setLstBookStore(ArrayList<BookStore> lstBookStores) {
         this.lstBookStores = lstBookStores;
     }
-
-    //    @Override
-//    public String toString() {
-//        return "model.Book{" +
-//                "name='" + name + '\'' +
-//                ", publisher='" + publisher + '\'' +
-//                ", ISBN='" + ISBN + '\'' +
-//                '}';
-//    }
 }

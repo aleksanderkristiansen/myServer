@@ -89,50 +89,6 @@ public class BookEndpoint {
         }
     }
 
-    /**
-     * Denne metode gør det muligt for klienten at ændre værdier på en bog (login er nødvendigt).
-     * Det er en PUT-metode, hvilket betyder at den modtager et input fra klienten.
-     * Metoden modtager også diverse parametre.
-     * @param authToken dette parameter tjekker om klienten sender en access-token (om brugeren er verificeret).
-     * @param id Tjekker id, for at vide hvilken bog, der skal ændres.
-     * @param data modtager data om hvad der skal ændres.
-     * @return Returner også status 200 eller 400 (med fejlbeskeder)
-     * @throws Exception
-     */
-    @PUT
-    @Path("/{bookId}")
-    @Produces("application/json")
-
-    public Response edit(@HeaderParam("authorization") String authToken, @PathParam("bookId") int id, String data) throws Exception {
-
-        User user = tokenController.getUserFromTokens(authToken);
-
-        if (user != null){
-
-            if (controller.getBook(id) != null) {
-                String string = new Gson().fromJson(data,String.class);
-                String decrypted = Crypter.encryptDecryptXOR(string);
-                if (controller.editBook(id, decrypted)) {
-                    return Response
-                            .status(200)
-                            .entity("{\"message\":\"Success! Book edited\"}")
-                            .build();
-                } else {
-                    return Response
-                            .status(400)
-                            .entity("{\"message\":\"failed\"}")
-                            .build();
-                }
-            } else {
-                return Response
-                        .status(400)
-                        .entity("{\"message\":\"failed. Book not found\"}")
-                        .build();
-            }
-
-        }else return Response.status(400).entity("{\"message\":\"failed\"}").build();
-    }
-
     @POST
     @Produces("application/json")
     public Response create(String bookData) throws Exception {

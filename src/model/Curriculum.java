@@ -5,8 +5,8 @@ package model;
  */
 public class Curriculum {
 
-    String school, education;
-    int semester, curriculumID;
+    private String school, education;
+    private int semester, curriculumID, educationID;
 
     public Curriculum(){
 
@@ -21,6 +21,11 @@ public class Curriculum {
     public Curriculum( String school, String education, int semester) {
         this.school = school;
         this.education = education;
+        this.semester = semester;
+    }
+
+    public Curriculum(int educationID, int semester){
+        this.educationID = educationID;
         this.semester = semester;
     }
 
@@ -56,6 +61,14 @@ public class Curriculum {
         this.curriculumID = curriculumID;
     }
 
+    public int getEducationID() {
+        return educationID;
+    }
+
+    public void setEducationID(int educationID) {
+        this.educationID = educationID;
+    }
+
     /**
      *
      * @return
@@ -69,4 +82,6 @@ public class Curriculum {
                 ", semester=" + semester +
                 '}';
     }
+
+
 }

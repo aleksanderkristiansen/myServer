@@ -138,29 +138,27 @@ public class UsersEndpoint  {
             }
             else return Response.status(400).entity("{\"message\":\"failed\"}").build();
         }else return Response.status(400).entity("{\"message\":\"failed\"}").build();
-
-
     }
 
     @POST
     @Path("/login")
     @Produces("application/json")
     public Response login(String data) throws SQLException {
+
         String decrypt = Crypter.encryptDecryptXOR(data);
 
         User user = new Gson().fromJson(decrypt, User.class);
 
-        User userLogedin = tokenController.authenticate(user.getEmail(), user.getPassword());
+        User userAuth = tokenController.authenticate(user.getEmail(), user.getPassword());
 
-        String userUsed = new Gson().toJson(userLogedin);
+        String userAuthString = new Gson().toJson(userAuth);
 
-        String userUsedC = Crypter.encryptDecryptXOR(userUsed);
+        String userAuthCrypted = Crypter.encryptDecryptXOR(userAuthString);
 
-        if (userLogedin != null) {
-            //demo to check if it returns this on post.
+        if (userAuth != null) {
             return Response
                 .status(200)
-                .entity(userUsedC)
+                .entity(userAuthCrypted)
                 .build();
         } else return Response
             .status(401)
@@ -170,8 +168,6 @@ public class UsersEndpoint  {
     @POST
     @Path("/logout")
     public Response logout (String data) throws SQLException {
-
-        String test = data;
         if(tokenController.deleteToken(data)) {
 
             return Response
